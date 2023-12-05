@@ -86,9 +86,9 @@ RUN groupadd ucomposer
 RUN useradd -g ucomposer ucomposer
 
 # needed for whois
-COPY etc/services /etc/services
-RUN chown root:root /etc/services
-RUN chmod 644 /etc/services
+# COPY etc/services /etc/services
+# RUN chown root:root /etc/services
+# RUN chmod 644 /etc/services
 
 # APACHE
 RUN a2enmod rewrite
