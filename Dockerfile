@@ -92,10 +92,8 @@ RUN chmod 644 /etc/services
 
 # APACHE
 RUN a2enmod rewrite
-RUN a2enmod ssl
 ADD ./apache/apache2.conf /etc/apache2/apache2.conf
 ADD ./apache/000-default.conf /etc/apache2/sites-enabled/
-ADD ./ssl /var/www/ssl
 RUN rm -f /etc/apache2/sites-available/default-ssl.conf
 
 ADD . /var/www/html/
