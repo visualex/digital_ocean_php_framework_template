@@ -35,7 +35,7 @@
         "wildbit/postmark-php": "^2.8",
         "ext-json": "*",
         "ext-imap": "*",
-        "react/socket": "^1.4.0",
+        "react/socket": "^1.4.0"
     },
     "require-dev": {
       "psy/psysh": "@stable",
