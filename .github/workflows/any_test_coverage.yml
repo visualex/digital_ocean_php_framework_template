@@ -11,10 +11,10 @@ jobs:
 
     services:
       mysql:
-        image: mysql:8.0
+        image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_database
+          MYSQL_DATABASE: default_database_test
           MYSQL_USER: test_user
           MYSQL_PASSWORD: test_password
         ports:
@@ -26,7 +26,7 @@ jobs:
       MYSQL_PORT: 3306
       MYSQL_USERNAME: test_user
       MYSQL_PASSWORD: test_password
-      MYSQL_DATABASE: test_database
+      MYSQL_DATABASE: default_database_test
 
     steps:
     - name: checkout repository
