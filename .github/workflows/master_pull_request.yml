@@ -1,0 +1,82 @@
+name: PHPUnit Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_database
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: test_user
+      MYSQL_PASSWORD: test_password
+      MYSQL_DATABASE: test_database
+
+    steps:
+    - name: Set up Docker Login
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.test_build_token }}
+
+    - name: set up slack
+      uses: archive/github-actions-slack@v2.8.0
+      with:
+        channel: ${{ secrets.SLACK_CHANNEL }}
+        text: 'Starting tests for branch ${{ github.event.ref }}...'
+
+    - name: checkout repository
+      uses: actions/checkout@v2
+
+    - name: build php container
+      run: docker build -t php-container -f Dockerfile .
+
+    # uncomment if you want to install packages w/composer during this step
+    # - name: install packages with composer
+    #   run: |
+    #     docker run --rm -v ${{ github.workspace }}:/var/www/html php-container composer install
+
+    - name: create initial database schema
+      run: |
+        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/var/www/html php-container bin/cake initial_schema
+
+    - name: run transition to new schema
+      run: |
+        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/var/www/html php-container bin/cake transition
+
+    - name: run phpunit tests with coverage
+      run: |
+        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/var/www/html php-container vendor/bin/phpunit --stop-on-failure
+
+    - name: Final Checks
+      run: |
+        exit_code=$?
+        if [ $exit_code -eq 0 ]; then
+          echo "Tests passed. Ready to merge!"
+          echo "Sending Slack notification..."
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Tests passed on branch master, ready to merge.\"}" ${{ secrets.SLACK_WEBHOOK }}
+          exit 0
+        else
+          echo "Tests failed. Please fix the issues before merging."
+          echo "Sending Slack notification..."
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Tests failed on branch ${{ github.event.ref }}! Please check the build.\"}" ${{ secrets.SLACK_WEBHOOK }}
+          exit 1
+        fi
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    colors="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    syntaxCheck="false"
+    bootstrap="./tests/bootstrap.php"
+    >
+    <php>
+        <ini name="memory_limit" value="-1"/>
+        <ini name="apc.enable_cli" value="1"/>
+        <const name="PHPUNIT_RUNNING" value="true"/>
+    </php>
+
+    <!-- Add any additional test suites you want to run here -->
+    <testsuites>
+        <testsuite name="App Test Suite">
+            <directory>./tests/TestCase</directory>
+        </testsuite>
+        <!-- Add plugin test suites here. -->
+    </testsuites>
+
+    <!-- Setup a listener for fixtures -->
+    <listeners>
+        <listener
+        class="\Cake\TestSuite\Fixture\FixtureInjector"
+        file="./vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php">
+            <arguments>
+                <object class="\Cake\TestSuite\Fixture\FixtureManager" />
+            </arguments>
+        </listener>
+    </listeners>
+
+    <!-- Ignore vendor tests in code coverage reports -->
+    <filter>
+        <whitelist>
+            <!-- include direcotries: -->
+            <directory suffix=".php">./src/</directory>
+            <exclude>
+               <!-- remove directories like so: -->
+               <directory suffix=".php">./plugins/*/src/</directory>
+               <!-- we will display coverage of the Shell folder but no testing will be needed -->
+               <!-- please read the README to know why we don't test shells -->
+               <!-- <directory suffix=".php">./src/Shell/</directory> -->
+               <directory suffix=".php">./src/Console/</directory>
+               <!-- remove specific files like this: -->
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

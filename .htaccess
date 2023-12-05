@@ -1,0 +1,20 @@
+# Uncomment the following to prevent the httpoxy vulnerability
+# See: https://httpoxy.org/
+#<IfModule mod_headers.c>
+#    RequestHeader unset Proxy
+#</IfModule>
+
+# avoid negotiation on files like README, CHANGELOG & serve our custom 404
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+
+<IfModule mod_rewrite.c>
+
+   RewriteEngine on
+
+   #CakePHP, routing
+   RewriteRule    ^$    webroot/    [L]
+   RewriteRule    (.*) webroot/$1    [L]
+
+</IfModule>

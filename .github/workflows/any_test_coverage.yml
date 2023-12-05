@@ -1,0 +1,51 @@
+name: Test and Coverage
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  test_and_coverage:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_database
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: test_user
+      MYSQL_PASSWORD: test_password
+      MYSQL_DATABASE: test_database
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Build PHP Container
+      run: docker build -t php-container -f Dockerfile .
+
+    - name: Set up PHP Container
+      run: |
+        docker run --rm -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/app php-container composer install
+
+    - name: Run PHPUnit Tests with Coverage
+      run: |
+        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/app php-container phpunit --coverage-clover build/logs/clover.xml
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        file: build/logs/clover.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+

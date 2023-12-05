@@ -1,0 +1,58 @@
+{
+    "name": "muffin/webservice",
+    "description": "Extremely simplistic webservices for CakePHP 3",
+    "type": "cakephp-plugin",
+    "keywords": [
+        "cakephp",
+        "muffin",
+        "webservice",
+        "api",
+        "orm"
+    ],
+    "homepage": "https://github.com/usemuffin/webservice",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jad Bitar",
+            "homepage": "http://jadb.io",
+            "role": "Author"
+        },
+        {
+            "name": "ADmad",
+            "homepage": "https://github.com/ADmad",
+            "role": "Author"
+        },
+        {
+            "name": "Marlin Cremers",
+            "homepage": "https://cvo-technologies.com",
+            "email": "m.cremers@cvo-technologies.com",
+            "role": "Author"
+        },
+        {
+            "name": "Others",
+            "homepage": "https://github.com/usemuffin/webservice/graphs/contributors"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/usemuffin/webservice/issues",
+        "source": "https://github.com/usemuffin/webservice",
+        "irc": "irc://irc.freenode.org/muffin"
+    },
+    "require": {
+    },
+    "require-dev": {
+        "cakephp/cakephp": ">=3.2",
+        "cakephp/cakephp-codesniffer": "2.*",
+        "phpunit/phpunit": "4.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Muffin\\Webservice\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Muffin\\Webservice\\Test\\": "tests"
+        }
+    }
+}

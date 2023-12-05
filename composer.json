@@ -1,0 +1,72 @@
+{
+    "name": "cakephp/app",
+    "description": "CakePHP skeleton app",
+    "homepage": "http://cakephp.org",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2",
+        "cakephp/cakephp": "3.4.*",
+        "mobiledetect/mobiledetectlib": "2.*",
+        "cakephp/migrations": "~1.0",
+        "cakephp/plugin-installer": "*",
+        "segmentio/analytics-php": "1.4.2",
+        "xety/cake3-cookieauth": "1.*",
+        "xety/cake3-upload": "1.*",
+        "aws/aws-sdk-php": "3.*",
+        "cakephp/bake": "^1.2",
+        "guzzlehttp/guzzle": "^6.2",
+        "tecnickcom/tcpdf": "6.2.*",
+        "muffin/webservice": "1.0.2",
+        "jeremyharris/cakephp-lazyload": "^1.0",
+        "soundasleep/html2text": "~0.3",
+        "PheRum/phpQuery": "^0.9.7",
+        "hmphu/deathbycaptcha": "^1.0",
+        "giggsey/libphonenumber-for-php": "^8.0",
+        "friendsofcake/fixturize": "^1.0",
+        "pear/mail_mime": "^1.10",
+        "tresorg/cakephp-paypalbuttons": "^0.0.4",
+        "stripe/stripe-php": "^5.2",
+        "google/apiclient": "^2.2",
+        "bigwhoop/sentence-breaker": "^2.0",
+        "imagine/imagine": "^0.7.1",
+        "vimeo/vimeo-api": "^2.0",
+        "aws/aws-php-sns-message-validator": "^1.5",
+        "wildbit/postmark-php": "^2.8",
+        "ext-json": "*",
+        "ext-imap": "*",
+        "react/socket": "^1.4.0",
+    },
+    "require-dev": {
+      "psy/psysh": "@stable",
+      "cakephp/debug_kit": "~3.2",
+        "phpunit/phpunit": "^5.7",
+        "phpstan/phpstan": "^0.11.12"
+    },
+    "suggest": {
+        "markstory/asset_compress": "An asset compression plugin which provides file concatenation and a flexible filter system for preprocessing and minification.",
+        "phpunit/phpunit": "Allows automated tests to be run without system-wide install.",
+        "cakephp/cakephp-codesniffer": "Allows to check the code against the coding standards used in CakePHP."
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src",
+            "PaypalButtons\\": "./plugins/Tresorg/PaypalButtons/src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
+            "PaypalButtons\\Test\\": "./plugins/PaypalButtons/tests",
+            "SkeletonPlugin\\Test\\": "./plugins/SkeletonPlugin/tests"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "App\\Console\\Installer::postInstall",
+        "post-create-project-cmd": "App\\Console\\Installer::postInstall",
+        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}
