@@ -29,23 +29,33 @@ jobs:
       MYSQL_DATABASE: test_database
 
     steps:
-    - name: Checkout Repository
+    - name: checkout repository
       uses: actions/checkout@v2
 
-    - name: Build PHP Container
+    - name: build php container
       run: docker build -t php-container -f Dockerfile .
 
-    - name: Set up PHP Container
-      run: |
-        docker run --rm -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/app php-container composer install
+    # if you need to call composer install, uncomment these lines
+    # - name: Set up PHP Container
+    #   run: |
+    #     docker run --rm -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/app php-container composer install
 
-    - name: Run PHPUnit Tests with Coverage
+    - name: run transition
       run: |
-        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/app php-container phpunit --coverage-clover build/logs/clover.xml
+        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/var/www/html php-container bin/cake transition
 
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        file: build/logs/clover.xml
-        token: ${{ secrets.CODECOV_TOKEN }}
+    - name: run phpunit tests
+      run: |
+        docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/var/www/html php-container vendor/bin/phpunit --stop-on-failure
+
+    # run tests and upload coverage:
+    # - name: run phpunit tests with coverage
+    #   run: |
+    #     docker run --rm --network host -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_PORT=$MYSQL_PORT -e MYSQL_USERNAME=$MYSQL_USERNAME -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -v ${{ github.workspace }}:/app php-container phpunit --coverage-clover build/logs/clover.xml
+
+    # - name: Upload Coverage to Codecov
+    #   uses: codecov/codecov-action@v2
+    #   with:
+    #     file: build/logs/clover.xml
+    #     token: ${{ secrets.CODECOV_TOKEN }}
 
