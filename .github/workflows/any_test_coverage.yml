@@ -12,7 +12,8 @@ jobs:
     services:
       mysql:
         # image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-mysql:latest
-        image: ghcr.io/${{ github.repository_owner }}/digital_ocean_mysql_template-mysql:latest
+        # image: ghcr.io/${{ github.repository_owner }}/digital_ocean_mysql_template-mysql:latest
+        image: ghcr.io/visualex/visualex/digital_ocean_mysql_template-mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: default_database_test
