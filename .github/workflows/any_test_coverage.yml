@@ -29,8 +29,8 @@ jobs:
     env:
       MYSQL_HOST: 127.0.0.1
       MYSQL_PORT: 3306
-      MYSQL_USERNAME: test_user
-      MYSQL_PASSWORD: test_password
+      MYSQL_USERNAME: username
+      MYSQL_PASSWORD: password
       MYSQL_DATABASE: default_database
 
     steps:
