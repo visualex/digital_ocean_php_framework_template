@@ -8,7 +8,6 @@ on:
 jobs:
   test_and_coverage:
     runs-on: ubuntu-latest
-
     services:
       mysql:
         # image: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}-mysql:latest
