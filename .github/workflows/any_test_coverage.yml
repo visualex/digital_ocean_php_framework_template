@@ -44,6 +44,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.test_build_token }}
 
+    - name: check env vars
+      run: env
+
     - name: build php container
       run: docker build -t php-container -f Dockerfile .
 
@@ -54,6 +57,7 @@ jobs:
 
     - name: run transition
       run: |
+        env
         docker run --rm --network host php-container bin/cake transition
 
     - name: run phpunit tests
