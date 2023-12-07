@@ -26,13 +26,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.test_build_token }}
 
-    env:
-      MYSQL_HOST: 127.0.0.1
-      MYSQL_PORT: 3306
-      MYSQL_USERNAME: test_user
-      MYSQL_PASSWORD: test_password
-      MYSQL_DATABASE: default_database
-
     steps:
     - name: checkout repository
       uses: actions/checkout@v2
@@ -44,9 +37,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.test_build_token }}
 
-    - name: check env vars
-      run: env
-
     - name: build php container
       run: docker build -t php-container -f Dockerfile .
 
@@ -56,12 +46,23 @@ jobs:
     #     docker run --rm  -v ${{ github.workspace }}:/app php-container composer install
 
     - name: run transition
+      env:
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_PORT: 3306
+        MYSQL_USERNAME: test_user
+        MYSQL_PASSWORD: test_password
+        MYSQL_DATABASE: default_database
       run: |
-        env
         docker run --rm --network host php-container env
         docker run --rm --network host php-container bin/cake transition
 
     - name: run phpunit tests
+      env:
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_PORT: 3306
+        MYSQL_USERNAME: test_user
+        MYSQL_PASSWORD: test_password
+        MYSQL_DATABASE: default_database
       run: |
         docker run --rm --network host php-container vendor/bin/phpunit --stop-on-failure
 
