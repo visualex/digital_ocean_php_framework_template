@@ -58,6 +58,7 @@ jobs:
     - name: run transition
       run: |
         env
+        docker run --rm --network host php-container env
         docker run --rm --network host php-container bin/cake transition
 
     - name: run phpunit tests
