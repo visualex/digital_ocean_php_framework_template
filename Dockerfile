@@ -1,4 +1,4 @@
-FROM ghcr.io/visualex/visualex/digital_ocean_php_template-mysql:latest
+FROM ghcr.io/visualex/visualex/digital_ocean_php_framework_template-aphp:latest
 
 ADD . /var/www/html/
 
